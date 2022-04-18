@@ -1,7 +1,7 @@
 from django import forms
-from .models import Consumption
+from .models import DataModel
 
-class ConsumptionForm(forms.ModelForm):
+class DataForm(forms.ModelForm):
     class Meta:
-        model = Consumption
+        model = DataModel
         fields = "__all__"

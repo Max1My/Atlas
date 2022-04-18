@@ -10,7 +10,9 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink" style="">
                                             <div class="dropdown-header">Редактирование:</div>
-                                            <a class="dropdown-item" href="#">Добавить расход</a>
+                                            <a class="dropdown-item" href="#">Создать новую</a>
+                                            <a class="dropdown-item" href="#">Редактировать</a>
+                                            <a class="dropdown-item" href="#">Удалить</a>
                                         </div>
                                     </div>
                                 </div>
@@ -44,26 +46,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    {% for data in qs %}
                                     <tr class="odd">
-                                            <td class="sorting_1">1</td>
-                                            <td>Ресторан</td>
-                                            <td>2008/11/28</td>
-                                            <td>$162,700</td>
-                                            <td>
-                                                <a href="#">Редактировать</a>
-                                                <a href="#">Удалить</a>
-                                            </td>
+                                            <td class="sorting_1">{{ data.id }}</td>
+                                            <td>{{ data.name }}</td>
+                                            <td>{{ data.created_at }}</td>
+                                            <td>{{ data.summary }}</td>
                                         </tr>
-                                    <tr class="odd">
-                                            <td class="sorting_1">2</td>
-                                            <td>Одежда</td>
-                                            <td>2009/10/09</td>
-                                            <td>$1,200,000</td>
-                                            <td>
-                                                <a href="#">Редактировать</a>
-                                                <a href="#">Удалить</a>
-                                            </td>
-                                        </tr>
+                                    {% endfor %}
                                     </tbody>
                                 </table>
                                 </div>
@@ -89,15 +79,11 @@
                                         <canvas id="myPieChart" width="551" height="245" style="display: block; width: 551px; height: 245px;" class="chartjs-render-monitor"></canvas>
                                     </div>
                                     <div class="mt-4 text-center small">
+                                        {% for data in qs %}
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Расход
+                                            <i class="fas fa-circle text-primary"></i> {{ data.name }}
                                         </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
@@ -106,18 +92,16 @@
 
 {% block scripts %}
 <script>
-// Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
-var remainder = 100 - {%for data in qs%}{{data.current}}{%endfor%};
 // Pie Chart Example
 var ctx = document.getElementById("myPieChart");
 var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
-    labels: [{%for data in qs%}'{{data.sts.id}}'{%endfor%},'remainder'],
+    labels: [{%for data in qs%}'{{data.name}}',{%endfor%}],
     datasets: [{
-      data: [{%for data in qs%}{{data.current}},{%endfor%} ,remainder],
+      data: [{%for data in qs%}{{data.summary}},{%endfor%}],
       backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
       hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
