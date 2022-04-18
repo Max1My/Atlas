@@ -8,37 +8,52 @@
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
+
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                             <h6 class="m-0 font-weight-bold text-primary">Таблица пользователя | {{ user.username }}</h6>
-                        <div class="dropdown no-arrow">
-                        <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
-                        </div>
+
                         </div>
                         <div class="card-body">
+                            <div class="form-div">
+                                <div class="row">
+                                    <div class="col-md-3">
+<!--                                        <input type="text" class="form-control" id="lastname" placeholder="Категория">-->
+                                        {{ form.category_name }}
+                                    </div>
+                                    <div class="col-md-3">
+<!--                                        <input type="text" class="form-control" id="email" placeholder="Сумма">-->
+                                        {{ form.current }}
+                                    </div>
+                                    <div class="col-md-3" style="text-align: right;">
+                                        <button class="btn btn-primary" id="add-row">Add Row</button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <form>
+                                    <form method="POST" class="post-form" action="/addnew">
                                         {% csrf_token %}
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            <th>STS</th>
                                             <th>Категория расходов</th>
-                                            <th>Дата</th>
                                             <th>Сумма расхода</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {% if form %}
-                                    {% for data in form %}
                                         <tr>
-                                            <td>{{ data.id }}</td>
-                                            <td>{{ data.category_name }}</td>>
-                                            <td>{{ data.created_at }}</td>
-                                            <td>{{ data.current }}</td>
+                                            <td>{{ form.sts.id }}</td>>
+                                            <td>{{ form.category_name }}</td>
+                                            <td>{{ form.current }}</td>
                                         </tr>
-                                    {% endfor %}
-                                    {% endif %}
                                     </tbody>
+                                        <div class="form-row">
+                        <div class="col-lg-3" style="margin-top: 33px;">
+                            <button class="btn float-lg-right btn-info btn-block btn-lg" type="submit" value="Save">
+                                Save
+                            </button>
+                        </div>
+                                        </div>
                                     </form>
                                 </table>
                             </div>
@@ -53,57 +68,19 @@
 {% endblock %}
 {% block scripts %}
 <script>
-$(document).ready(function(){
-	$('[data-toggle="tooltip"]').tooltip();
-	var actions = $("table td:last-child").html();
-	// Append table with add row form on add new button click
-    $(".add-new").click(function(){
-		$(this).attr("disabled", "disabled");
-		var index = $("table tbody tr:last-child").index();
-        var row = '<tr>' +
-            '<td><input type="text" class="form-control" name="name" id="name"></td>' +
-            '<td><input type="text" class="form-control" name="department" id="department"></td>' +
-            '<td><input type="text" class="form-control" name="phone" id="phone"></td>' +
-            '<td><input type="text" class="form-control" name="phone" id="phone"></td>' +
-        '</tr>';
-    	$("table").append(row);
-		$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-	// Add row on add button click
-	$(document).on("click", ".add", function(){
-		var empty = false;
-		var input = $(this).parents("tr").find('input[type="text"]');
-        input.each(function(){
-			if(!$(this).val()){
-				$(this).addClass("error");
-				empty = true;
-			} else{
-                $(this).removeClass("error");
-            }
-		});
-		$(this).parents("tr").find(".error").first().focus();
-		if(!empty){
-			input.each(function(){
-				$(this).parent("td").html($(this).val());
-			});
-			$(this).parents("tr").find(".add, .edit").toggle();
-			$(".add-new").removeAttr("disabled");
-		}
-    });
-	// Edit row on edit button click
-	$(document).on("click", ".edit", function(){
-        $(this).parents("tr").find("td:not(:last-child)").each(function(){
-			$(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
-		});
-		$(this).parents("tr").find(".add, .edit").toggle();
-		$(".add-new").attr("disabled", "disabled");
-    });
-	// Delete row on delete button click
-	$(document).on("click", ".delete", function(){
-        $(this).parents("tr").remove();
-		$(".add-new").removeAttr("disabled");
-    });
-});
+    $(document).ready(function() {
+        // Add new row
+        $("#add-row").click(function () {
+            var lastname = $("#id_category_name").val();
+            var email = $("#id_current").val();
+            $(".table tbody tr").last().after(
+                '<tr class="fadetext">' +
+                '<td>' + lastname + '</td>' +
+                '<td>' + email + '</td>' +
+                '</tr>'
+            );
+        })
+                })
+
 </script>
 {% endblock %}

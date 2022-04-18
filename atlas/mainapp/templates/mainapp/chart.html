@@ -1,18 +1,16 @@
-{% extends 'mainapp/index.html' %}
+{% extends 'mainapp/base.html' %}
 {% block content %}
 <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Таблица расходов</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Таблица расходов | Пользователя</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink" style="">
                                             <div class="dropdown-header">Редактирование:</div>
-                                            <a class="dropdown-item" href="#">Создать новую</a>
-                                            <a class="dropdown-item" href="#">Редактировать</a>
-                                            <a class="dropdown-item" href="#">Удалить</a>
+                                            <a class="dropdown-item" href="/addnew">Создать новую</a>
                                         </div>
                                     </div>
                                 </div>
@@ -31,11 +29,11 @@
                                             <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 115px;">
                                                 ID
                                             </th>
+                                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 115px;">
+                                                STS
+                                            </th>
                                             <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 181px;">
                                                 Категории расходов
-                                            </th>
-                                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 75px;">
-                                                Дата
                                             </th>
                                             <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">
                                                 Сумма расхода
@@ -46,12 +44,18 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {% for data in qs %}
+                                    {% for employee in employees %}
                                     <tr class="odd">
-                                            <td class="sorting_1">{{ data.id }}</td>
-                                            <td>{{ data.name }}</td>
-                                            <td>{{ data.created_at }}</td>
-                                            <td>{{ data.summary }}</td>
+                                            <td class="sorting_1">{{ employee.id }}</td>
+                                            <td>{{ employee.sts.id }}</td>
+                                            <td>{{ employee.category_name }}</td>
+                                            <td>{{ employee.current }}</td>
+                                            <td><a href="/update/{{ employee.id }}" class="btn btn-warning btn-circle btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a></td>
+                                            <td><a href="/delete/{{ employee.id }}" class="btn btn-danger btn-circle btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </a></td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -79,9 +83,9 @@
                                         <canvas id="myPieChart" width="551" height="245" style="display: block; width: 551px; height: 245px;" class="chartjs-render-monitor"></canvas>
                                     </div>
                                     <div class="mt-4 text-center small">
-                                        {% for data in qs %}
+                                        {% for employee in employees %}
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> {{ data.name }}
+                                            <i class="fas fa-circle text-primary"></i> {{ employee.category_name }}
                                         </span>
                                         {% endfor %}
                                     </div>
@@ -99,9 +103,9 @@ var ctx = document.getElementById("myPieChart");
 var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
-    labels: [{%for data in qs%}'{{data.name}}',{%endfor%}],
+    labels: [{%for employee in employees%}'{{employee.category_name}}',{%endfor%}],
     datasets: [{
-      data: [{%for data in qs%}{{data.summary}},{%endfor%}],
+      data: [{%for employee in employees%}{{employee.current}},{%endfor%}],
       backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
       hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",

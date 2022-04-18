@@ -1,8 +1,11 @@
-from django.views.generic import TemplateView,DetailView
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, DetailView, CreateView
+from mainapp.mixin import BaseClassContextMixin, CustomDispatchMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from .models import DataModel
-from .forms import DataForm
+from .forms import TableForm
+
 
 class HomePage(TemplateView):
     template_name = 'mainapp/chart.html'
@@ -12,38 +15,49 @@ class HomePage(TemplateView):
         context["qs"] = DataModel.objects.all()
         return context
 
-class DataDetailView(DetailView):
-    model = DataModel
-    template_name = 'mainapp/table_detail.html'
+
+# class TableCreateView(CreateView, BaseClassContextMixin, CustomDispatchMixin):
+#     model = DataModel
+#     template_name = 'mainapp/table_create.html'
+#     form_class = TableForm
+#     title = 'Создание таблицы'
+#     success_url = reverse_lazy('mainapp:index')
 
 
-def create(request,pk):
-    if request.method == 'POST':
-        form = DataForm(request.POST)
+def addnew(request):
+    if request.method == "POST":
+        form = TableForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('index')
-    current_user = get_object_or_404(User,id=pk)
-    form = DataForm()
-    content = {
-        'user': current_user,
-        'form': form
-    }
-    return render(request, 'mainapp/table_create.html', content)
+            try:
+                form.save()
+                return redirect('/')
+            except:
+                pass
+    else:
+        form = TableForm()
+    return render(request, 'mainapp/index.html', {'form': form})
 
 
-def edit(request, pk, template_name='mainapp/table_edit.html'):
-    table = get_object_or_404(DataForm, pk=pk)
-    form = DataForm(request.POST or None, instance='post')
+def index(request):
+    employees = DataModel.objects.all()
+    return render(request, "mainapp/chart.html", {'employees': employees})
+
+
+# def edit(request, id):
+#     employee = DataModel.objects.get(id=id)
+#     return render(request, 'mainapp/edit.html', {'employee': employee})
+
+
+def update(request, id):
+    employee = DataModel.objects.get(id=id)
+    form = TableForm(request.POST, instance=employee)
     if form.is_valid():
         form.save()
-        return redirect('index')
-    return render(request, template_name, {'form': form})
+        return redirect("/")
+    return render(request, 'mainapp/edit.html', {'employee': employee})
 
 
-def delete(request, pk, template_name='mainapp/table_delete.html'):
-    contact = get_object_or_404(DataForm, pk=pk)
-    if request.method == 'POST':
-        contact.delete()
-        return redirect('index')
-    return render(request, template_name, {'object': contact})
+def destroy(request, id):
+    employee = DataModel.objects.get(id=id)
+    employee.delete()
+    return redirect("/")
