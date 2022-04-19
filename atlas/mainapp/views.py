@@ -52,8 +52,13 @@ def update(request, id):
     employee = DataModel.objects.get(id=id)
     form = TableForm(request.POST, instance=employee)
     if form.is_valid():
-        form.save()
-        return redirect("/")
+        try:
+            form.save()
+            print('form save')
+            return redirect("/")
+        except Exception as e:
+            print(e)
+    print(form.errors)
     return render(request, 'mainapp/edit.html', {'employee': employee})
 
 

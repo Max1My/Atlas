@@ -14,9 +14,9 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <form method="POST" class="post-form" action="/addnew">
+                <form method="POST" class="post-form" action="/addnew">
                         {% csrf_token %}
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
                             <th>STS</th>
@@ -24,13 +24,6 @@
                             <th>Сумма расхода</th>
                         </tr>
                         </thead>
-                        <tfoot>
-                        <tr>
-                            <a href="#" class="btn btn-success btn-circle">
-                                <i class="fas fa-check"></i>
-                            </a>
-                        </tr>
-                        </tfoot>
                         <tbody>
                         <tr>
                             <td>{{ form.sts }}</td>
@@ -39,8 +32,11 @@
                             <td>{{ form.current }}</td>
                         </tr>
                         </tbody>
-                    </form>
                 </table>
+                    <button class="btn btn-success btn-circle" type="submit">
+                                <i class="fas fa-check"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

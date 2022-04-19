@@ -25,7 +25,7 @@ from .models import DataModel
 class TableForm(forms.ModelForm):
     class Meta:
         model = DataModel
-        fields = '__all__'
+        fields = ['sts','category_name','current']
         widgets = {
             'sts': forms.NumberInput(attrs={ 'class': 'form-control' }),
             'category_name': forms.TextInput(attrs={ 'class': 'form-control' }),
