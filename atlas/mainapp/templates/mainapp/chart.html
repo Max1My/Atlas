@@ -1,5 +1,97 @@
 {% extends 'mainapp/base.html' %}
+{% load mainapp_extras %}
 {% block content %}
+{% if user.id == 1 %}
+{% for user_table in users %}
+<div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Таблица расходов | Пользователя {{ user_table.username }}</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink" style="">
+                                            <div class="dropdown-header">Редактирование:</div>
+                                            <a class="dropdown-item" href="/addnew/{{ user_table.id }}">Создать новую</a>
+                                        </div>
+                                    </div>
+                                </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                        <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 115px;">
+                                                ID
+                                            </th>
+                                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 115px;">
+                                                Пользователь
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 181px;">
+                                                Категории расходов
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">
+                                                Сумма расхода
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">
+
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for employee in  employees %}
+                                    <tr class="odd">
+                                            <td class="sorting_1">{{ employee.id }}</td>
+                                            <td>{{ employee.sts }}</td>
+                                            <td>{{ employee.category_name }}</td>
+                                            <td>{{ employee.current }}</td>
+                                            <td><a href="/update/{{ employee.id }}" class="btn btn-warning btn-circle btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a></td>
+                                            <td><a href="/delete/{{ employee.id }}" class="btn btn-danger btn-circle btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+<div class="col-xl-4 col-lg-5">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">График расходов</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <canvas id="myPieChart" width="551" height="245" style="display: block; width: 551px; height: 245px;" class="chartjs-render-monitor"></canvas>
+                                    </div>
+                                    <div class="mt-4 text-center small">
+                                        {% for employee in employees %}
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-primary"></i> {{ employee.category_name }}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+{% endfor %}
+{% else %}
 <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -10,7 +102,7 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink" style="">
                                             <div class="dropdown-header">Редактирование:</div>
-                                            <a class="dropdown-item" href="/addnew">Создать новую</a>
+                                            <a class="dropdown-item" href="/addnew/{{ user.id }}">Создать новую</a>
                                         </div>
                                     </div>
                                 </div>
@@ -87,6 +179,7 @@
                                 </div>
                             </div>
                         </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
