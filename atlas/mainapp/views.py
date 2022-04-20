@@ -1,5 +1,3 @@
-from django.contrib.auth.models import User
-from django.template.defaultfilters import register
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from mainapp.mixin import BaseClassContextMixin, CustomDispatchMixin
@@ -12,7 +10,7 @@ from .forms import TableForm
 
 class TableCreateView(CreateView, BaseClassContextMixin, CustomDispatchMixin):
     model = DataModel
-    template_name = 'mainapp/index.html'
+    template_name = 'mainapp/add.html'
     form_class = TableForm
     title = 'Добавление'
     success_url = reverse_lazy('index')
@@ -28,7 +26,7 @@ def index(request):
     content = {
         'employees': employees,
     }
-    return render(request, "mainapp/chart.html", content)
+    return render(request, "mainapp/index.html", content)
 
 
 @login_required(login_url='/auth/login/')
@@ -38,11 +36,9 @@ def update(request, id):
     if form.is_valid():
         try:
             form.save()
-            print('form save')
             return redirect("/")
         except Exception as e:
-            print(e)
-    print(form.errors)
+            pass
     return render(request, 'mainapp/edit.html', {'employee': employee})
 
 
