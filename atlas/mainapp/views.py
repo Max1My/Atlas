@@ -24,18 +24,10 @@ class TableCreateView(CreateView, BaseClassContextMixin, CustomDispatchMixin):
 
 @login_required(login_url='/auth/login/')
 def index(request):
-    if request.user.id == 1:
-        users = User.objects.all()
-        employees = DataModel.objects.all()
-        content = {
-            'employees':employees,
-            'users':users
-        }
-    else:
-        employees = DataModel.objects.filter(sts=request.user.id)
-        content = {
-            'employees': employees,
-        }
+    employees = DataModel.objects.filter(sts=request.user.id)
+    content = {
+        'employees': employees,
+    }
     return render(request, "mainapp/chart.html", content)
 
 
