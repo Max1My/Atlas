@@ -3,6 +3,10 @@ from django.views.generic import CreateView
 from mainapp.mixin import BaseClassContextMixin, CustomDispatchMixin
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.http.request import HttpRequest
+from django.views.generic import View
+from django.http import JsonResponse
 
 from .models import DataModel
 from .forms import TableForm
@@ -20,13 +24,32 @@ class TableCreateView(CreateView, BaseClassContextMixin, CustomDispatchMixin):
         return super(TableCreateView, self).form_valid(form)
 
 
-@login_required(login_url='/auth/login/')
+
 def index(request):
-    employees = DataModel.objects.filter(sts=request.user.id)
-    content = {
-        'employees': employees,
-    }
+    if request.method == 'GET' and 'van' in request.GET:
+        value = request.GET['val']
+        if value is not None and value != '':
+            value = float(request.GET.get('val'))
+            value += 0
+            return JsonResponse({'data': value}, status=200)
+
+    if request.user.id == 1:
+            users = User.objects.all()
+            employees = DataModel.objects.all()
+            content = {
+                'users': users,
+                'employees': employees
+            }
+    else:
+            employees = DataModel.objects.filter(sts=request.user.id)
+            content = {
+                'employees': employees,
+            }
     return render(request, "mainapp/index.html", content)
+
+
+def post(self, request: HttpRequest):
+    return render(request, 'mainapp/index.html')
 
 
 @login_required(login_url='/auth/login/')

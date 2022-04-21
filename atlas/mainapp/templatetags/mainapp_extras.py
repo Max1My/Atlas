@@ -4,6 +4,7 @@ from mainapp.models import DataModel
 register = template.Library()
 
 
-@register.filter
-def in_employees(user):
-    return DataModel.objects.get(sts=user)
+@register.simple_tag()
+def get_employee(user):
+    return DataModel.objects.filter(sts=user)
+
