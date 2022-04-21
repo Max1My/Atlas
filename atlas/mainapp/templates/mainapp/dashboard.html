@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load static %}
+
+<canvas id="myChart" width="400" height="200"></canvas>
+
+<script src="{% static '/js/Chart.min.js' %}"></script>
+
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{time1|safe}},
+        datasets: [
+        {label: 'Wing 1 temperature', data : {{temperature|safe}}, backgroundColor:['rgba(54, 162, 235, 0.2)'], borderColor: ['rgba(54, 162, 235, 1)'], borderWidth: 1}
+        ]},
+    options: {
+        scales: { yAxes: [{ ticks: { beginAtZero: false }}]}
+        }
+    });
+
+ChartUpdate(function(){
+  myChart.data.datasets[0].data = {{temperature|safe}};
+  myChart.data.labels = {{time1|safe}};
+  myChart.update();
+}, 5000);
+
+</script>

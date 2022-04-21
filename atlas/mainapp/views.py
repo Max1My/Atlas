@@ -24,10 +24,11 @@ class TableCreateView(CreateView, BaseClassContextMixin, CustomDispatchMixin):
         return super(TableCreateView, self).form_valid(form)
 
 
-
+@login_required(login_url='/auth/login/')
 def index(request):
-    if request.method == 'GET' and 'van' in request.GET:
+    if request.method == 'GET' and 'val' in request.GET:
         value = request.GET['val']
+        print(value)
         if value is not None and value != '':
             value = float(request.GET.get('val'))
             value += 0
@@ -47,9 +48,9 @@ def index(request):
             }
     return render(request, "mainapp/index.html", content)
 
+    if request.method == 'POST' in request.POST:
+        return render(request, 'mainapp/index.html')
 
-def post(self, request: HttpRequest):
-    return render(request, 'mainapp/index.html')
 
 
 @login_required(login_url='/auth/login/')
