@@ -3,10 +3,34 @@
 {% block content %}
 {% if user.id == 1 %}
 {% for user in users %}
-
-{% block chart %}
-{% include 'mainapp/chart.html' %}
-{% endblock %}
+<div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">График расходов</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="chart-area">
+            <div class="chartjs-size-monitor">
+                <div class="chartjs-size-monitor-expand">
+                    <div class=""></div>
+                </div>
+                <div class="chartjs-size-monitor-shrink">
+                    <div class=""></div>
+                </div>
+            </div>
+            {% get_employee user=user.id as data %}
+            {% for employee in data %}
+            <form method="GET">
+                <input type="text" placeholder="Enter value" name="value-field" id="value-field">
+                <button id="submit">Submit</button>
+            </form>
+            <canvas id="myAreaChart{{ employee.id }}" style="display: block; width: 729px; height: 290px;" width="729" height="290"
+                    class="chartjs-render-monitor"></canvas>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 <div class="col-xl-4 col-lg-5">
 <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
@@ -46,8 +70,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {% get_employee user=user.id as employees %}
-                                    {% for employee in employees %}
+                                    {% get_employee user=user.id as data %}
+                                    {% for employee in data %}
                                     <tr class="odd">
                                             <td class="sorting_1">{{ employee.category_name }}</td>
                                             <td>{{ employee.current }}</td>
@@ -70,6 +94,32 @@
 </div>
 {% endfor %}
 {% else %}
+<div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">График расходов</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="chart-area">
+            <div class="chartjs-size-monitor">
+                <div class="chartjs-size-monitor-expand">
+                    <div class=""></div>
+                </div>
+                <div class="chartjs-size-monitor-shrink">
+                    <div class=""></div>
+                </div>
+            </div>
+            <form method="GET">
+                <input type="text" placeholder="Enter value" name="value-field" id="value-field">
+                <button id="submit">Submit</button>
+            </form>
+            <canvas id="myAreaChart{% for employee in employees %}{{ employee.sts_id }}{% endfor %}" style="display: block; width: 729px; height: 290px;" width="729" height="290"
+                    class="chartjs-render-monitor"></canvas>
+        </div>
+    </div>
+</div>
+<div class="col-xl-4 col-lg-5">
 <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -79,8 +129,8 @@
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink" style="">
-                                            <div class="dropdown-header">Редактирование:</div>
-                                            <a class="dropdown-item" href="/addnew/{{ user.id }}">Создать новую</a>
+                                            <div class="dropdown-header">Редактирование :</div>
+                                            <a class="dropdown-item" href="/addnew/{{ user.id }}">Создать новую {{ employees.id }}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -96,9 +146,6 @@
                                         <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                     <thead>
                                         <tr role="row">
-                                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 181px;">
-                                                Категории расходов
-                                            </th>
                                             <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">
                                                 Сумма расхода
                                             </th>
@@ -110,7 +157,6 @@
                                     <tbody>
                                     {% for employee in employees %}
                                     <tr class="odd">
-                                            <td class="sorting_1">{{ employee.category_name }}</td>
                                             <td>{{ employee.current }}</td>
                                             <td><a href="/update/{{ employee.id }}" class="btn btn-warning btn-circle btn-sm">
                                         <i class="fas fa-edit"></i>
@@ -128,30 +174,125 @@
                             </div>
                         </div>
                     </div>
-<div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">График расходов</h6>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                                        <canvas id="myPieChart" width="551" height="245" style="display: block; width: 551px; height: 245px;" class="chartjs-render-monitor"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        {% get_employee user=user.id as employees %}
-                                        {% for employee in employees %}
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> {{ employee.category_name }}
-                                        </span>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+</div>
 {% endif %}
 {% endblock %}
-{% block scripts %}
-{% include 'mainapp/chart.html' %}
-{% endblock %}
+{%block scripts%}
+{% if user.id == 1 %}
+    <script>
+        {% get_employee user=user.id as data_set %}
+        $(document).ready(function () {
+            {% for employee in data_set %}
+            const ctx = document.getElementById('myAreaChart{{ employee.id}}').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [1,2], //dummy initial labels
+                    datasets: [{
+                        label: 'data',
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(78, 115, 223, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2,
+                        data: [{% for employee in data_set %}{{employee.current}},{%endfor%}], //dummy initial data
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 25,
+                            top: 25,
+                            bottom: 0
+                    }
+                },
+
+
+                    responsive: false, //to define specific size
+                }
+            });
+            $('#submit').click(function (e) {
+                $.ajax({
+                    url: '',
+                    type: 'GET',
+                    data: {
+                        current: $('#value-field').val()
+                    },
+                    success: function (response) {
+                        myChart.data.datasets[0].data.push(response.data);
+                        myChart.data.labels.push(myChart.data.labels.at(-1) + 1);
+                        myChart.update()
+                    }
+                })
+                e.preventDefault();
+            })
+        })
+        {% endfor %}
+    </script>
+{% else %}
+    <script>
+        $(document).ready(function () {
+            const ctx = document.getElementById('myAreaChart{% for employee in employees %}{{ employee.sts_id }}{% endfor %}').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [1,2], //dummy initial labels
+                    datasets: [{
+                        label: 'data',
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(78, 115, 223, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2,
+                        data: [{% for employee in employees %}{{employee.current}},{%endfor%}], //dummy initial data
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 25,
+                            top: 25,
+                            bottom: 0
+                    }
+                },
+
+
+                    responsive: false, //to define specific size
+                }
+            });
+            $('#submit').click(function (e) {
+                $.ajax({
+                    url: '',
+                    type: 'GET',
+                    data: {
+                        current: $('#value-field').val(),
+                        sts_id: {{user.id}}
+                    },
+                    success: function (response) {
+                        myChart.data.datasets[0].data.push(response.data);
+                        myChart.data.labels.push(myChart.data.labels.at(-1) + 1);
+                        myChart.update()
+                    }
+                })
+                e.preventDefault();
+            })
+        })
+    </script>
+{% endif %}
+{%endblock scripts%}

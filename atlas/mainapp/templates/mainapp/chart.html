@@ -1,4 +1,37 @@
 {% block chart %}
+{% load mainapp_extras %}
+{% if user.id == 1 %}
+{% for user in users %}
+{% get_employee user=user.id as employees %}
+<div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">График расходов</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="chart-area">
+            <div class="chartjs-size-monitor">
+                <div class="chartjs-size-monitor-expand">
+                    <div class=""></div>
+                </div>
+                <div class="chartjs-size-monitor-shrink">
+                    <div class=""></div>
+                </div>
+            </div>
+            {% for employee in employees %}
+            <form method="GET">
+                <input type="text" placeholder="Enter value" name="value-field" id="value-field">
+                <button id="submit">Submit</button>
+            </form>
+            <canvas id="myAreaChart{{ employee.id }}" style="display: block; width: 729px; height: 290px;" width="729" height="290"
+                    class="chartjs-render-monitor"></canvas>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %}
 <div class="col-xl-8 col-lg-7">
     <div class="card shadow mb-4">
         <!-- Card Header - Dropdown -->
@@ -19,17 +52,20 @@
                 <input type="text" placeholder="Enter value" name="value-field" id="value-field">
                 <button id="submit">Submit</button>
             </form>
-            <canvas id="myAreaChart" style="display: block; width: 629px; height: 320px;" width="629" height="320"
+            <canvas id="myAreaChart{{ employee.id }}" style="display: block; width: 729px; height: 290px;" width="729" height="290"
                     class="chartjs-render-monitor"></canvas>
         </div>
     </div>
 </div>
-{% endblock chart%}
+{% endif %}
+{% endblock %}
 
 {%block scripts%}
     <script>
+        {% get_employee user=user.id as employees %}
         $(document).ready(function () {
-            const ctx = document.getElementById('myAreaChart').getContext('2d');
+            {% for employee in employees %}
+            const ctx = document.getElementById('myAreaChart{{ employee.id}}').getContext('2d');
             const myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -47,7 +83,7 @@
                         pointHoverBorderColor: "rgba(78, 115, 223, 1)",
                         pointHitRadius: 10,
                         pointBorderWidth: 2,
-                        data: [], //dummy initial data
+                        data: [{{ employee.current }}], //dummy initial data
                     }]
                 },
                 options: {
@@ -81,5 +117,6 @@
                 e.preventDefault();
             })
         })
+        {% endfor %}
     </script>
 {%endblock scripts%}

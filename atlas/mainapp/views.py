@@ -26,31 +26,44 @@ class TableCreateView(CreateView, BaseClassContextMixin, CustomDispatchMixin):
 
 @login_required(login_url='/auth/login/')
 def index(request):
-    if request.method == 'GET' and 'val' in request.GET:
-        value = request.GET['val']
+    if request.method == 'GET' and 'current' in request.GET:
+        value = request.GET['current']
+        sts_id = request.GET['sts_id']
         print(value)
+        print(sts_id)
         if value is not None and value != '':
-            value = float(request.GET.get('val'))
+            value = float(request.GET.get('current'))
             value += 0
+            DataModel.objects.create(
+                current=value,
+                sts_id=sts_id
+            )
             return JsonResponse({'data': value}, status=200)
 
     if request.user.id == 1:
-            users = User.objects.all()
-            employees = DataModel.objects.all()
-            content = {
-                'users': users,
-                'employees': employees
-            }
+        users = User.objects.all()
+        employees = DataModel.objects.all()
+        content = {
+            'users': users,
+            'employees': employees
+        }
     else:
-            employees = DataModel.objects.filter(sts=request.user.id)
-            content = {
-                'employees': employees,
-            }
+        employees = DataModel.objects.filter(sts_id=request.user.id)
+        content = {
+            'employees': employees,
+        }
     return render(request, "mainapp/index.html", content)
 
-    if request.method == 'POST' in request.POST:
-        return render(request, 'mainapp/index.html')
-
+    if request.method == 'POST':
+        form = TableForm(request.POST)
+        if form.is_valid():
+            data = form.save()
+            return JsonResponse({"msg": "Data successfully saved.", "data": data.value})
+        else:
+            return JsonResponse({"msg": "Invalid data", "data": None})
+    else:
+        form = TableForm()
+        return render(request, 'mainapp/index.html', {"form": form})
 
 
 @login_required(login_url='/auth/login/')
